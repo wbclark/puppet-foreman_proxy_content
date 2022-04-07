@@ -8,9 +8,16 @@ class { 'katello::repo':
 
 include pulpcore::repo
 
-package { 'policycoreutils':
-  ensure => installed,
+if $facts['os']['selinux']['enabled'] {
+  package { 'pulpcore-selinux':
+    ensure  => installed,
+    require => Class['pulpcore::repo'],
+  }
 }
+
+# package { 'policycoreutils':
+#  ensure => installed,
+# }
 
 if $facts['os']['release']['major'] == '8' {
   package { 'glibc-langpack-en':
